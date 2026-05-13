@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客管理</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #30363d;
+      --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+      --ok: #3fb950; --err: #f85149; --radius: 10px;
+    }
+    body {
+      min-height: 100svh; display: flex; align-items: center; justify-content: center;
+      background: var(--bg); color: var(--text);
+      font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .card {
+      width: min(400px, calc(100vw - 32px));
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 36px 32px 28px;
+    }
+    h1 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+    .sub { font-size: .85rem; color: var(--muted); margin-bottom: 24px; }
+    label { display: block; font-size: .82rem; color: var(--muted); margin-bottom: 6px; }
+    input {
+      width: 100%; padding: 10px 14px; font: inherit; font-size: .92rem;
+      background: var(--bg); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px; outline: none;
+      transition: border-color .15s; margin-bottom: 16px;
+    }
+    input:focus { border-color: var(--accent); }
+    hr { border: none; border-top: 1px solid var(--border); margin: 4px 0 20px; }
+    button {
+      width: 100%; padding: 10px; font: inherit; font-size: .95rem;
+      font-weight: 600; background: var(--accent); color: #0d1117;
+      border: none; border-radius: 8px; cursor: pointer; transition: opacity .15s;
+    }
+    button:hover { opacity: .85; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .msg { min-height: 1.4em; margin-top: 10px; font-size: .82rem; text-align: center; }
+    .msg.ok  { color: var(--ok); }
+    .msg.err { color: var(--err); }
+    .back { margin-top: 20px; text-align: center; font-size: .8rem; color: var(--muted); }
+    .back a { color: var(--muted); text-decoration: none; }
+    .back a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>博客管理</h1>
+    <p class="sub">修改站点访问密码</p>
+
+    <form id="form">
+      <label for="admin-pw">管理员密码</label>
+      <input id="admin-pw" type="password" autocomplete="off" placeholder="SSYSSY">
+      <hr>
+      <label for="new-pw">新访问密码</label>
+      <input id="new-pw" type="password" autocomplete="new-password" placeholder="新密码">
+      <label for="confirm-pw">确认新密码</label>
+      <input id="confirm-pw" type="password" autocomplete="new-password" placeholder="再次输入">
+      <button id="btn" type="submit">更新密码</button>
+      <p class="msg" id="msg"></p>
+    </form>
+
+    <p class="back"><a href="/">← 返回博客</a></p>
+  </div>
+
+  <script>
+    var API = "https://api.nobodyls.cn";
+    var form      = document.getElementById("form");
+    var adminPw   = document.getElementById("admin-pw");
+    var newPw     = document.getElementById("new-pw");
+    var confirmPw = document.getElementById("confirm-pw");
+    var btn       = document.getElementById("btn");
+    var msg       = document.getElementById("msg");
+
+    function setMsg(text, type) {
+      msg.textContent = text;
+      msg.className = "msg " + (type || "");
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      setMsg("");
+      if (!adminPw.value) { setMsg("请输入管理员密码", "err"); adminPw.focus(); return; }
+      if (!newPw.value)   { setMsg("请输入新密码", "err"); newPw.focus(); return; }
+      if (newPw.value !== confirmPw.value) { setMsg("两次输入不一致", "err"); confirmPw.select(); return; }
+
+      btn.disabled = true;
+      btn.textContent = "更新中…";
+      try {
+        var resp = await fetch(API + "/blog/auth/update-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ admin_password: adminPw.value, new_password: newPw.value }),
+        });
+        if (resp.ok) {
+          setMsg("密码已更新", "ok");
+          form.reset();
+        } else {
+          var data = await resp.json().catch(function() { return {}; });
+          setMsg(data.detail || "管理员密码不正确", "err");
+          adminPw.select();
+        }
+      } catch (e2) {
+        setMsg("请求失败，请稍后重试", "err");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "更新密码";
+      }
+    });
+  </script>
+</body>
+</html>
