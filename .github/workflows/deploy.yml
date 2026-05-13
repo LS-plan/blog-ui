@@ -1,0 +1,34 @@
+name: Deploy to losyun
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "[154.217.234.91]:11182 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOmwTB/kI3hUp4JE5nFSNZAzVtsVN6ftLluIOdNuwuoI" >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        run: |
+          rsync -az --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            -e "ssh -i ~/.ssh/deploy_key -p 11182" \
+            ./ \
+            root@154.217.234.91:/srv/blog-ui/
