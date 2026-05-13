@@ -9,39 +9,86 @@
     :root {
       --bg: #0d1117; --surface: #161b22; --border: #30363d;
       --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
-      --ok: #3fb950; --err: #f85149; --radius: 10px;
+      --ok: #3fb950; --err: #f85149; --warn: #d29922; --radius: 10px;
     }
     body {
-      min-height: 100svh; display: flex; align-items: center; justify-content: center;
+      min-height: 100svh; display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 16px;
       background: var(--bg); color: var(--text);
-      font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     .card {
-      width: min(400px, calc(100vw - 32px));
+      width: min(720px, 100%);
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 36px 32px 28px;
+      border-radius: var(--radius); padding: 28px 28px 24px;
     }
-    h1 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
-    .sub { font-size: .85rem; color: var(--muted); margin-bottom: 24px; }
-    label { display: block; font-size: .82rem; color: var(--muted); margin-bottom: 6px; }
-    input {
-      width: 100%; padding: 10px 14px; font: inherit; font-size: .92rem;
+    h1 { font-size: 1.1rem; font-weight: 700; margin-bottom: 18px; }
+
+    /* tabs */
+    .tabs { display: flex; gap: 4px; margin-bottom: 22px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+    .tab-btn {
+      padding: 7px 16px; font: inherit; font-size: .85rem; font-weight: 600;
+      background: transparent; color: var(--muted); border: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      cursor: pointer; transition: color .15s, border-color .15s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* form elements */
+    label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 5px; }
+    input[type=password], input[type=text] {
+      width: 100%; padding: 9px 12px; font: inherit; font-size: .9rem;
       background: var(--bg); color: var(--text);
-      border: 1px solid var(--border); border-radius: 8px; outline: none;
-      transition: border-color .15s; margin-bottom: 16px;
+      border: 1px solid var(--border); border-radius: 7px; outline: none;
+      transition: border-color .15s; margin-bottom: 14px;
     }
     input:focus { border-color: var(--accent); }
-    hr { border: none; border-top: 1px solid var(--border); margin: 4px 0 20px; }
-    button {
-      width: 100%; padding: 10px; font: inherit; font-size: .95rem;
-      font-weight: 600; background: var(--accent); color: #0d1117;
-      border: none; border-radius: 8px; cursor: pointer; transition: opacity .15s;
+    hr { border: none; border-top: 1px solid var(--border); margin: 4px 0 18px; }
+    .btn {
+      padding: 8px 18px; font: inherit; font-size: .88rem; font-weight: 600;
+      border: none; border-radius: 7px; cursor: pointer; transition: opacity .15s;
     }
-    button:hover { opacity: .85; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-    .msg { min-height: 1.4em; margin-top: 10px; font-size: .82rem; text-align: center; }
+    .btn:hover { opacity: .85; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #0d1117; }
+    .btn-danger  { background: var(--err);   color: #fff; font-size: .8rem; padding: 4px 10px; }
+    .btn-warn    { background: var(--warn);  color: #0d1117; font-size: .8rem; padding: 4px 10px; }
+    .btn-ok      { background: var(--ok);    color: #0d1117; font-size: .8rem; padding: 4px 10px; }
+    .btn-ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border); font-size: .8rem; padding: 4px 10px; }
+    .btn-ghost:hover { color: var(--text); }
+    .msg { min-height: 1.4em; margin-top: 10px; font-size: .8rem; text-align: center; }
     .msg.ok  { color: var(--ok); }
     .msg.err { color: var(--err); }
+
+    /* token tab */
+    .token-toolbar { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 18px; flex-wrap: wrap; }
+    .token-toolbar input { margin-bottom: 0; width: 200px; }
+    .token-toolbar label { margin-bottom: 0; }
+    #token-msg { font-size: .8rem; color: var(--muted); align-self: center; }
+
+    /* token table */
+    .token-table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    th { color: var(--muted); font-weight: 600; text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 8px 10px; border-bottom: 1px solid #21262d; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr.expired td { opacity: .45; }
+    tr.disabled-row td { text-decoration: line-through; opacity: .55; }
+    .badge {
+      display: inline-block; padding: 1px 7px; border-radius: 10px;
+      font-size: .75rem; font-weight: 600; white-space: nowrap;
+    }
+    .badge-ok   { background: #1c3a26; color: var(--ok); }
+    .badge-err  { background: #3a1c1c; color: var(--err); }
+    .badge-muted{ background: #21262d; color: var(--muted); }
+    .actions { display: flex; gap: 5px; flex-wrap: wrap; }
+    .slug-cell { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .token-cell { font-family: monospace; font-size: .78rem; color: var(--muted); }
+    .empty-msg { text-align: center; color: var(--muted); padding: 32px 0; font-size: .85rem; }
+
     .back { margin-top: 20px; text-align: center; font-size: .8rem; color: var(--muted); }
     .back a { color: var(--muted); text-decoration: none; }
     .back a:hover { color: var(--text); }
@@ -50,67 +97,213 @@
 <body>
   <div class="card">
     <h1>博客管理</h1>
-    <p class="sub">修改站点访问密码</p>
 
-    <form id="form">
-      <label for="admin-pw">管理员密码</label>
-      <input id="admin-pw" type="password" autocomplete="off" placeholder="SSYSSY">
-      <hr>
-      <label for="new-pw">新访问密码</label>
-      <input id="new-pw" type="password" autocomplete="new-password" placeholder="新密码">
-      <label for="confirm-pw">确认新密码</label>
-      <input id="confirm-pw" type="password" autocomplete="new-password" placeholder="再次输入">
-      <button id="btn" type="submit">更新密码</button>
-      <p class="msg" id="msg"></p>
-    </form>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="password">修改密码</button>
+      <button class="tab-btn" data-tab="tokens">Token 管理</button>
+    </div>
+
+    <!-- ── Tab 1: 修改密码 ── -->
+    <div class="tab-panel active" id="panel-password">
+      <form id="pw-form">
+        <label for="admin-pw">管理员密码</label>
+        <input id="admin-pw" type="password" autocomplete="off" placeholder="SSYSSY">
+        <hr>
+        <label for="new-pw">新访问密码</label>
+        <input id="new-pw" type="password" autocomplete="new-password" placeholder="新密码">
+        <label for="confirm-pw">确认新密码</label>
+        <input id="confirm-pw" type="password" autocomplete="new-password" placeholder="再次输入">
+        <button class="btn btn-primary" id="pw-btn" type="submit" style="width:100%">更新密码</button>
+        <p class="msg" id="pw-msg"></p>
+      </form>
+    </div>
+
+    <!-- ── Tab 2: Token 管理 ── -->
+    <div class="tab-panel" id="panel-tokens">
+      <div class="token-toolbar">
+        <div>
+          <label for="t-admin-pw">管理员密码</label>
+          <input id="t-admin-pw" type="password" autocomplete="off" placeholder="SSYSSY">
+        </div>
+        <button class="btn btn-primary" id="t-load-btn">加载</button>
+        <span id="token-msg"></span>
+      </div>
+      <div class="token-table-wrap">
+        <div id="token-list"></div>
+      </div>
+    </div>
 
     <p class="back"><a href="/">← 返回博客</a></p>
   </div>
 
   <script>
     var API = "https://api.nobodyls.cn";
-    var form      = document.getElementById("form");
-    var adminPw   = document.getElementById("admin-pw");
-    var newPw     = document.getElementById("new-pw");
+
+    // ── tab 切换 ──────────────────────────────────────────────────────────────
+    document.querySelectorAll(".tab-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.remove("active"); });
+        document.querySelectorAll(".tab-panel").forEach(function (p) { p.classList.remove("active"); });
+        btn.classList.add("active");
+        document.getElementById("panel-" + btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    // ── Tab 1: 修改密码 ───────────────────────────────────────────────────────
+    var pwForm = document.getElementById("pw-form");
+    var adminPw = document.getElementById("admin-pw");
+    var newPw = document.getElementById("new-pw");
     var confirmPw = document.getElementById("confirm-pw");
-    var btn       = document.getElementById("btn");
-    var msg       = document.getElementById("msg");
+    var pwBtn = document.getElementById("pw-btn");
+    var pwMsg = document.getElementById("pw-msg");
 
-    function setMsg(text, type) {
-      msg.textContent = text;
-      msg.className = "msg " + (type || "");
-    }
+    function setMsg(el, text, type) { el.textContent = text; el.className = "msg " + (type || ""); }
 
-    form.addEventListener("submit", async function (e) {
+    pwForm.addEventListener("submit", async function (e) {
       e.preventDefault();
-      setMsg("");
-      if (!adminPw.value) { setMsg("请输入管理员密码", "err"); adminPw.focus(); return; }
-      if (!newPw.value)   { setMsg("请输入新密码", "err"); newPw.focus(); return; }
-      if (newPw.value !== confirmPw.value) { setMsg("两次输入不一致", "err"); confirmPw.select(); return; }
-
-      btn.disabled = true;
-      btn.textContent = "更新中…";
+      setMsg(pwMsg, "");
+      if (!adminPw.value) { setMsg(pwMsg, "请输入管理员密码", "err"); adminPw.focus(); return; }
+      if (!newPw.value) { setMsg(pwMsg, "请输入新密码", "err"); newPw.focus(); return; }
+      if (newPw.value !== confirmPw.value) { setMsg(pwMsg, "两次输入不一致", "err"); confirmPw.select(); return; }
+      pwBtn.disabled = true; pwBtn.textContent = "更新中…";
       try {
         var resp = await fetch(API + "/blog/auth/update-password", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ admin_password: adminPw.value, new_password: newPw.value }),
         });
-        if (resp.ok) {
-          setMsg("密码已更新", "ok");
-          form.reset();
-        } else {
-          var data = await resp.json().catch(function() { return {}; });
-          setMsg(data.detail || "管理员密码不正确", "err");
-          adminPw.select();
+        if (resp.ok) { setMsg(pwMsg, "密码已更新", "ok"); pwForm.reset(); }
+        else {
+          var d = await resp.json().catch(function () { return {}; });
+          setMsg(pwMsg, d.detail || "管理员密码不正确", "err"); adminPw.select();
         }
-      } catch (e2) {
-        setMsg("请求失败，请稍后重试", "err");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "更新密码";
-      }
+      } catch (e2) { setMsg(pwMsg, "请求失败，请稍后重试", "err"); }
+      finally { pwBtn.disabled = false; pwBtn.textContent = "更新密码"; }
     });
+
+    // ── Tab 2: Token 管理 ─────────────────────────────────────────────────────
+    var tAdminPw = document.getElementById("t-admin-pw");
+    var tLoadBtn = document.getElementById("t-load-btn");
+    var tokenMsg = document.getElementById("token-msg");
+    var tokenList = document.getElementById("token-list");
+    var _tokens = [];
+
+    function fmtDate(iso) {
+      var d = new Date(iso);
+      return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" +
+             String(d.getDate()).padStart(2,"0") + " " +
+             String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+    }
+
+    function fmtExpiry(iso, expired) {
+      if (expired) return '<span class="badge badge-muted">已过期</span>';
+      var diff = Math.floor((new Date(iso) - Date.now()) / 1000);
+      var h = Math.floor(diff / 3600);
+      var m = Math.floor((diff % 3600) / 60);
+      var label = h > 0 ? h + "h " + m + "m" : m + "m";
+      return fmtDate(iso) + ' <span style="color:var(--muted);font-size:.75rem">(' + label + '后)</span>';
+    }
+
+    function renderTable() {
+      if (_tokens.length === 0) {
+        tokenList.innerHTML = '<p class="empty-msg">暂无 token</p>'; return;
+      }
+      var rows = _tokens.map(function (t) {
+        var rowClass = t.expired ? "expired" : (t.disabled ? "disabled-row" : "");
+        var status = t.expired
+          ? '<span class="badge badge-muted">已过期</span>'
+          : t.disabled
+            ? '<span class="badge badge-err">已禁用</span>'
+            : '<span class="badge badge-ok">正常</span>';
+        var actions = [];
+        if (!t.expired) {
+          if (t.disabled) {
+            actions.push('<button class="btn btn-ok" onclick="doEnable(\'' + t.token + '\')">启用</button>');
+          } else {
+            actions.push('<button class="btn btn-warn" onclick="doDisable(\'' + t.token + '\')">禁用</button>');
+          }
+          actions.push('<button class="btn btn-ghost" onclick="doExtend(\'' + t.token + '\')">延期24h</button>');
+        }
+        actions.push('<button class="btn btn-danger" onclick="doDelete(\'' + t.token + '\')">删除</button>');
+        return '<tr class="' + rowClass + '">' +
+          '<td class="token-cell">' + t.token.slice(0, 10) + '…</td>' +
+          '<td class="slug-cell" title="' + t.slug + '">' + t.slug + '</td>' +
+          '<td>' + fmtDate(t.created_at) + '</td>' +
+          '<td>' + (t.expired ? fmtDate(t.expires_at) : fmtExpiry(t.expires_at, t.expired)) + '</td>' +
+          '<td style="text-align:center">' + t.access_count + '</td>' +
+          '<td>' + status + '</td>' +
+          '<td><div class="actions">' + actions.join("") + '</div></td>' +
+          '</tr>';
+      }).join("");
+      tokenList.innerHTML =
+        '<table><thead><tr>' +
+        '<th>Token</th><th>文章</th><th>创建时间</th><th>到期时间</th><th>访问</th><th>状态</th><th>操作</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table>';
+    }
+
+    async function loadTokens() {
+      var pw = tAdminPw.value.trim();
+      if (!pw) { tokenMsg.textContent = "请输入管理员密码"; tokenMsg.style.color = "var(--err)"; return; }
+      tLoadBtn.disabled = true; tLoadBtn.textContent = "加载中…";
+      tokenMsg.textContent = ""; tokenMsg.style.color = "";
+      try {
+        var resp = await fetch(API + "/blog/links/all", { headers: { "X-Admin-Password": pw } });
+        if (!resp.ok) {
+          var d = await resp.json().catch(function () { return {}; });
+          tokenMsg.textContent = d.detail || "验证失败"; tokenMsg.style.color = "var(--err)"; return;
+        }
+        var data = await resp.json();
+        _tokens = data.links;
+        tokenMsg.textContent = "共 " + _tokens.length + " 条"; tokenMsg.style.color = "var(--muted)";
+        renderTable();
+      } catch (e) { tokenMsg.textContent = "请求失败"; tokenMsg.style.color = "var(--err)"; }
+      finally { tLoadBtn.disabled = false; tLoadBtn.textContent = "加载"; }
+    }
+
+    tLoadBtn.addEventListener("click", loadTokens);
+    tAdminPw.addEventListener("keydown", function (e) { if (e.key === "Enter") loadTokens(); });
+
+    async function apiAction(url, body, method) {
+      method = method || "POST";
+      var resp = await fetch(API + url, {
+        method: method, headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.assign({ admin_password: tAdminPw.value }, body)),
+      });
+      if (!resp.ok) { var d = await resp.json().catch(function () { return {}; }); throw new Error(d.detail || "failed"); }
+      return resp.json();
+    }
+
+    async function doDisable(token) {
+      try { await apiAction("/blog/links/" + token + "/disable", { disabled: true }); }
+      catch (e) { alert("禁用失败: " + e.message); return; }
+      var t = _tokens.find(function (x) { return x.token === token; });
+      if (t) t.disabled = true;
+      renderTable();
+    }
+
+    async function doEnable(token) {
+      try { await apiAction("/blog/links/" + token + "/disable", { disabled: false }); }
+      catch (e) { alert("启用失败: " + e.message); return; }
+      var t = _tokens.find(function (x) { return x.token === token; });
+      if (t) t.disabled = false;
+      renderTable();
+    }
+
+    async function doExtend(token) {
+      try { var r = await apiAction("/blog/links/" + token + "/extend", { hours: 24 }); }
+      catch (e) { alert("延期失败: " + e.message); return; }
+      var t = _tokens.find(function (x) { return x.token === token; });
+      if (t) { t.expires_at = r.expires_at; t.expired = false; }
+      renderTable();
+    }
+
+    async function doDelete(token) {
+      if (!confirm("确认删除这条 token？")) return;
+      try { await apiAction("/blog/links/" + token, {}, "DELETE"); }
+      catch (e) { alert("删除失败: " + e.message); return; }
+      _tokens = _tokens.filter(function (x) { return x.token !== token; });
+      tokenMsg.textContent = "共 " + _tokens.length + " 条"; tokenMsg.style.color = "var(--muted)";
+      renderTable();
+    }
   </script>
 </body>
 </html>
