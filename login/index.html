@@ -39,6 +39,8 @@
     button:hover { opacity: .85; }
     button:disabled { opacity: .5; cursor: not-allowed; }
     .err { min-height: 1.4em; margin-top: 10px; font-size: .82rem; color: var(--err); text-align: center; }
+    .hint { font-size: .8rem; color: var(--muted); text-align: center; margin-top: 4px; margin-bottom: 4px; line-height: 1.5; }
+    .hint.warn { color: #d29922; }
     .footer { margin-top: 28px; text-align: center; font-size: .78rem; color: var(--muted); }
     .footer a { color: var(--muted); text-decoration: none; }
     .footer a:hover { color: var(--text); }
@@ -53,7 +55,8 @@
       <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
     </svg>
     <h1>nobodyls · 博客</h1>
-    <p class="sub">输入访问密码继续阅读</p>
+    <p class="sub" id="sub">输入访问密码继续阅读</p>
+    <p class="hint" id="hint"></p>
     <form id="form">
       <input id="pw" type="password" inputmode="numeric"
         autocomplete="current-password" placeholder="访问密码" autofocus>
@@ -74,6 +77,17 @@
       var p = new URLSearchParams(location.search).get("next");
       return (p && p.startsWith("/")) ? p : "/";
     }
+
+    (function () {
+      var nextUrl = new URLSearchParams(location.search).get("next") || "";
+      var hint = document.getElementById("hint");
+      if (nextUrl.includes("token=")) {
+        hint.textContent = "分享链接已过期或被禁用，请联系站长获取新链接";
+        hint.classList.add("warn");
+      } else if (nextUrl) {
+        hint.textContent = "如令牌过期或无法访问，请联系站长获取分享链接";
+      }
+    })();
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
