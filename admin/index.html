@@ -312,7 +312,7 @@
     }
 
     function doCopy(token, slug, btnId) {
-      var url = "https://blog.nobodyls.cn/posts/" + slug + "/?token=" + token;
+      var url = "https://blog.nobodyls.cn/share/?token=" + encodeURIComponent(token);
       navigator.clipboard.writeText(url).then(function () {
         var btn = document.getElementById(btnId);
         if (!btn) return;
